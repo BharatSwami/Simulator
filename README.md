@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## Economic World Simulator – V1
 
 This project is a minimal full-stack prototype of an economic/financial world simulator with four interconnected time series:
