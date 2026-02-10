@@ -1,0 +1,262 @@
+{
+  "factors": {
+    "gold": { "type": "gbm", "params": { "mu": 0.0005, "sigma": 0.01, "start": 1800.0 } },
+    "rate": { "type": "ou", "params": { "mean": 0.02, "kappa": 0.1, "sigma": 0.005, "start": 0.02 } },
+    "temp": { "type": "ou", "params": { "mean": 0.0, "kappa": 0.05, "sigma": 0.02, "start": 0.0 } },
+    "industry": { "type": "rw", "params": { "mu": 0.0, "sigma": 0.01, "start": 0.0 } },
+    "research": { "type": "rw", "params": { "mu": 0.0002, "sigma": 0.01, "start": 0.0 } },
+    "market": { "type": "gbm", "params": { "mu": 0.0004, "sigma": 0.012, "start": 100.0 } },
+    "vol": { "type": "ou", "params": { "mean": 0.2, "kappa": 0.3, "sigma": 0.05, "start": 0.2 } },
+    "crypto_demand": { "type": "rw", "params": { "mu": 0.0, "sigma": 0.05, "start": 0.0 } }
+  },
+  "categories": {
+    "commodities": { "label": "Commodities" },
+    "metals": { "label": "Metals" },
+    "currency": { "label": "Currency" },
+    "stocks": { "label": "Stocks" },
+    "derivatives": { "label": "Derivatives" },
+    "crypto": { "label": "Crypto" }
+  },
+  "assets": {
+    "WHEAT": {
+      "label": "Wheat",
+      "category": "commodities",
+      "base_price": 50.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0001,
+        "sigma": 0.02,
+        "betas": {
+          "rate": -0.5,
+          "temp": 1.5,
+          "industry": 0.3
+        }
+      }
+    },
+    "OIL": {
+      "label": "Oil",
+      "category": "commodities",
+      "base_price": 80.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0002,
+        "sigma": 0.025,
+        "betas": {
+          "rate": -0.2,
+          "industry": 1.2
+        }
+      }
+    },
+    "CORN": {
+      "label": "Corn",
+      "category": "commodities",
+      "base_price": 40.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0001,
+        "sigma": 0.018,
+        "betas": {
+          "temp": 1.2,
+          "industry": 0.4
+        }
+      }
+    },
+    "COPPER": {
+      "label": "Copper",
+      "category": "metals",
+      "base_price": 4.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0002,
+        "sigma": 0.02,
+        "betas": {
+          "industry": 1.5
+        }
+      }
+    },
+    "ALUMINIUM": {
+      "label": "Aluminium",
+      "category": "metals",
+      "base_price": 2.5,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.00015,
+        "sigma": 0.018,
+        "betas": {
+          "industry": 1.2
+        }
+      }
+    },
+    "LITHIUM": {
+      "label": "Lithium",
+      "category": "metals",
+      "base_price": 60.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0003,
+        "sigma": 0.03,
+        "betas": {
+          "research": 1.5,
+          "industry": 0.5
+        }
+      }
+    },
+    "USD_IDX": {
+      "label": "USD Index",
+      "category": "currency",
+      "base_price": 100.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.00005,
+        "sigma": 0.01,
+        "betas": {
+          "rate": 1.0,
+          "gold": -0.3
+        }
+      }
+    },
+    "EUR_IDX": {
+      "label": "EUR Index",
+      "category": "currency",
+      "base_price": 100.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.00004,
+        "sigma": 0.01,
+        "betas": {
+          "rate": -0.3
+        }
+      }
+    },
+    "JPY_IDX": {
+      "label": "JPY Index",
+      "category": "currency",
+      "base_price": 100.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.00003,
+        "sigma": 0.012,
+        "betas": {
+          "rate": -0.5
+        }
+      }
+    },
+    "TECH_CO": {
+      "label": "Tech Co",
+      "category": "stocks",
+      "base_price": 150.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0005,
+        "sigma": 0.03,
+        "betas": {
+          "market": 1.2,
+          "rate": -0.4,
+          "research": 0.8
+        }
+      }
+    },
+    "BANK_CO": {
+      "label": "Bank Co",
+      "category": "stocks",
+      "base_price": 80.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0003,
+        "sigma": 0.02,
+        "betas": {
+          "market": 1.0,
+          "rate": 0.8
+        }
+      }
+    },
+    "ENERGY_CO": {
+      "label": "Energy Co",
+      "category": "stocks",
+      "base_price": 60.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0003,
+        "sigma": 0.025,
+        "betas": {
+          "market": 0.9,
+          "industry": 0.7
+        }
+      }
+    },
+    "CALL_TECH": {
+      "label": "Call on Tech",
+      "category": "derivatives",
+      "base_price": 10.0,
+      "process": "option_call",
+      "params": {
+        "underlying": "TECH_CO",
+        "strike": 150.0,
+        "maturity_ticks": 100,
+        "vol_factor": "vol",
+        "rate_factor": "rate"
+      }
+    },
+    "FUT_OIL": {
+      "label": "Oil Future",
+      "category": "derivatives",
+      "base_price": 5.0,
+      "process": "future",
+      "params": {
+        "underlying": "OIL",
+        "maturity_ticks": 60,
+        "rate_factor": "rate"
+      }
+    },
+    "SWAP_IR": {
+      "label": "IR Swap",
+      "category": "derivatives",
+      "base_price": 1.0,
+      "process": "swap_rate",
+      "params": {
+        "rate_factor": "rate",
+        "maturity_ticks": 120
+      }
+    },
+    "BTC": {
+      "label": "Bitcoin",
+      "category": "crypto",
+      "base_price": 30000.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0004,
+        "sigma": 0.07,
+        "betas": {
+          "crypto_demand": 1.2
+        }
+      }
+    },
+    "ETH": {
+      "label": "Ethereum",
+      "category": "crypto",
+      "base_price": 2000.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0005,
+        "sigma": 0.08,
+        "betas": {
+          "crypto_demand": 1.5
+        }
+      }
+    },
+    "ALT1": {
+      "label": "Altcoin 1",
+      "category": "crypto",
+      "base_price": 100.0,
+      "process": "factor_linear_gbm",
+      "params": {
+        "alpha": 0.0007,
+        "sigma": 0.12,
+        "betas": {
+          "crypto_demand": 2.0
+        }
+      }
+    }
+  }
+}
+
