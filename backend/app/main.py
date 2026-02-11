@@ -77,6 +77,8 @@ async def update_params(payload: ParamsUpdate) -> Dict[str, Any]:
 async def _simulation_loop() -> None:
     """Background loop that advances the simulation and broadcasts ticks."""
     global _simulation_task, _current_run_id
+    print("RUN ID:", _current_run_id)
+
     try:
         while True:
             if engine.state.running:
@@ -84,10 +86,10 @@ async def _simulation_loop() -> None:
                 if _current_run_id is not None:
                     # Persist a subset of values for now, mapping factors/assets
                     # into the existing SimulationPoint schema.
-                    gold_val = float(point.factors.get("gold", 0.0))
-                    rate_val = float(point.factors.get("rate", 0.0))
-                    dollar_val = float(point.assets.get("USD_IDX", 0.0))
-                    wheat_val = float(point.assets.get("WHEAT", 0.0))
+                    gold_val = float(point.factors.get("gold", 10.0))
+                    rate_val = float(point.factors.get("rate", 10.0))
+                    dollar_val = float(point.assets.get("USD_IDX", 10.0))
+                    wheat_val = float(point.assets.get("WHEAT", 10.0))
                     add_point(
                         run_id=_current_run_id,
                         tick_index=point.tick,
@@ -97,6 +99,7 @@ async def _simulation_loop() -> None:
                         dollar=dollar_val,
                         wheat=wheat_val,
                     )
+                ###
                 message = {
                     "type": "tick",
                     "tick": point.tick,
@@ -172,6 +175,10 @@ async def get_simulation_run(run_id: int) -> Dict[str, Any]:
 
 @app.websocket("/ws/sim")
 async def websocket_sim(ws: WebSocket) -> None:
+
+    global _current_run_id
+
+
     await ws.accept()
     _websocket_clients.append(ws)
 
@@ -192,9 +199,16 @@ async def websocket_sim(ws: WebSocket) -> None:
             if msg_type == "control":
                 action = data.get("action")
                 if action == "start":
+                    # engine.state.running = True
+                    if _current_run_id is None:
+                        run = create_run(params_json="{}", notes="Auto run")
+                        _current_run_id = run.id
                     engine.state.running = True
                 elif action == "pause":
+                    # engine.state.running = False
                     engine.state.running = False
+                    if _current_run_id is not None:
+                        finish_run(_current_run_id)
                 elif action == "reset":
                     engine.reset()
             elif msg_type == "set_params":

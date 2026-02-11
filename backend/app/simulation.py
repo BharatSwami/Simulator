@@ -15,7 +15,7 @@ import numpy as np
 class SimParams:
     """Global simulation parameters."""
 
-    dt: float = 1.0  # time step (arbitrary units)
+    dt: float = 0.1  # time step (arbitrary units)
     history_capacity: int = 500  # number of ticks to keep in history
 
 
@@ -113,6 +113,8 @@ class SimulationEngine:
         self.state = SimState(params=self.params)
         self._rng = np.random.default_rng(seed)
         self._init_state_from_specs()
+        self._prev_factors = dict(self.state.factors)
+
 
     @staticmethod
     def _load_config(path: Path) -> Dict[str, Any]:
@@ -200,9 +202,18 @@ class SimulationEngine:
                 mu_eff = alpha
                 for fname, beta in betas.items():
                     fval = factors.get(fname, 0.0)
-                    mu_eff += float(beta) * float(fval)
+                    # mu_eff += float(beta) * float(fval)
+                    prev = self._prev_factors.get(fname, fval)
+                    factor_ret = (fval - prev)
+                    mu_eff += float(beta) * factor_ret
                 dW = self._rng.normal(0.0, math.sqrt(dt))
                 log_p = math.log(max(price, 1e-8)) + mu_eff * dt + sigma * dW
+                # new_assets[aid] = float(math.exp(log_p))
+                MAX_LOG = 700.0
+                MIN_LOG = -700.0
+
+                log_p = max(min(log_p, MAX_LOG), MIN_LOG)
+
                 new_assets[aid] = float(math.exp(log_p))
 
             elif spec.process == "option_call":
@@ -267,6 +278,9 @@ class SimulationEngine:
         self.state.tick += 1
         self._step_factors()
         self._step_assets()
+        # After everything is computed,
+        # update previous factor memory
+        self._prev_factors = dict(self.state.factors)
 
         point = SimPoint(
             tick=self.state.tick,
