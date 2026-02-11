@@ -45,6 +45,8 @@ type AckMessage = {
 
 const WS_URL = import.meta.env.VITE_WS_URL ?? "ws://localhost:8000/ws/sim";
 
+// const WS_URL = import.meta.env.VITE_WS_URL ?? "wss://your-render-url.onrender.com/ws/sim";
+
 type SeriesPoint = { tick: number; value: number };
 type AssetSeries = Record<string, SeriesPoint[]>;
 
