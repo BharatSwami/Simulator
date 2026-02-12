@@ -26,9 +26,22 @@ class SimulationPoint(SQLModel, table=True):
     wheat: float
 
 
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sim.db")
+# DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sim.db")
 
-engine = create_engine(DATABASE_URL, echo=False)
+# DATABASE_URL = os.getenv("DATABASE_URL")
+# DATABASE_URL = "postgresql://postgres:WxcIzHu4olJAJO68@db.xmfqvibdikejgehwbukp.supabase.co:5432/postgres"
+DATABASE_URL = "postgresql://postgres.xmfqvibdikejgehwbukp:WxcIzHu4olJAJO68@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
+
+
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL not set")
+
+engine = create_engine(
+    DATABASE_URL,
+    echo=True,          # turn True locally for debugging
+    pool_pre_ping=True
+)
 
 
 def create_db_and_tables() -> None:
@@ -40,12 +53,15 @@ def get_session() -> Session:
 
 
 def create_run(params_json: str, notes: str | None = None) -> SimulationRun:
+    # print("CREATING RUN...")
     with get_session() as session:
         run = SimulationRun(params_json=params_json, notes=notes)
         session.add(run)
         session.commit()
         session.refresh(run)
+        # print("RUN ID:", run.id)
         return run
+
 
 
 def finish_run(run_id: int) -> None:
@@ -69,6 +85,7 @@ def add_point(
     dollar: float,
     wheat: float,
 ) -> None:
+    # print("ADDING POINT...")
     with get_session() as session:
         point = SimulationPoint(
             run_id=run_id,
@@ -81,6 +98,7 @@ def add_point(
         )
         session.add(point)
         session.commit()
+        # print("POINT ADDED")
 
 
 def get_run_with_points(run_id: int) -> tuple[SimulationRun | None, list[SimulationPoint]]:

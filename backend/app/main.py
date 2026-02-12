@@ -77,7 +77,7 @@ async def update_params(payload: ParamsUpdate) -> Dict[str, Any]:
 async def _simulation_loop() -> None:
     """Background loop that advances the simulation and broadcasts ticks."""
     global _simulation_task, _current_run_id
-    print("RUN ID:", _current_run_id)
+    # print("RUN ID:", _current_run_id)
 
     try:
         while True:
@@ -200,10 +200,15 @@ async def websocket_sim(ws: WebSocket) -> None:
                 action = data.get("action")
                 if action == "start":
                     # engine.state.running = True
-                    if _current_run_id is None:
-                        run = create_run(params_json="{}", notes="Auto run")
-                        _current_run_id = run.id
+                    # if _current_run_id is None:
+                    #     run = create_run(params_json="{}", notes="Auto run")
+                    #     _current_run_id = run.id
+                    # engine.state.running = True
+                    
+                    run = create_run(params_json="{}", notes="Auto run")
+                    _current_run_id = run.id
                     engine.state.running = True
+                    await _ensure_simulation_task_running()   # ADD THIS
                 elif action == "pause":
                     # engine.state.running = False
                     engine.state.running = False
