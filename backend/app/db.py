@@ -26,11 +26,11 @@ class SimulationPoint(SQLModel, table=True):
     wheat: float
 
 
-# DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sim.db")
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./sim.db")
 
 # DATABASE_URL = os.getenv("DATABASE_URL")
 # DATABASE_URL = "postgresql://postgres:WxcIzHu4olJAJO68@db.xmfqvibdikejgehwbukp.supabase.co:5432/postgres"
-DATABASE_URL = "postgresql://postgres.xmfqvibdikejgehwbukp:WxcIzHu4olJAJO68@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
+# DATABASE_URL = "postgresql://postgres.xmfqvibdikejgehwbukp:WxcIzHu4olJAJO68@aws-1-ap-south-1.pooler.supabase.com:5432/postgres"
 
 
 
@@ -39,7 +39,8 @@ if not DATABASE_URL:
 
 engine = create_engine(
     DATABASE_URL,
-    echo=True,          # turn True locally for debugging
+    # echo=True,          # turn True locally for debugging
+    echo=False,
     pool_pre_ping=True
 )
 

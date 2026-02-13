@@ -43,8 +43,8 @@ type AckMessage = {
   };
 };
 
-// const WS_URL =  "ws://localhost:8000/ws/sim";
-const WS_URL = import.meta.env.VITE_WS_URL ?? "wss://simulator-uk25.onrender.com/ws/sim";
+const WS_URL =  "ws://localhost:8000/ws/sim";
+// const WS_URL = import.meta.env.VITE_WS_URL ?? "wss://simulator-uk25.onrender.com/ws/sim";
 
 
 // const WS_URL = import.meta.env.VITE_WS_URL ?? "wss://your-render-url.onrender.com/ws/sim";
